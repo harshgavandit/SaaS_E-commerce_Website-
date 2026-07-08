@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -14,12 +14,8 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
-import { useDispatch } from "react-redux";
-import store, {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../Redux Toolkit/Store";
+import { type Dayjs } from "dayjs";
+import { useAppDispatch, useAppSelector } from "../../../Redux Toolkit/Store";
 import { createCoupon } from "../../../Redux Toolkit/Admin/AdminCouponSlice";
 
 interface CouponFormValues {
@@ -30,9 +26,9 @@ interface CouponFormValues {
   minimumOrderValue: number;
 }
 
-const CouponForm: React.FC = () => {
+const CouponForm = () => {
   const dispatch = useAppDispatch();
-  const { coupone,adminCoupon } = useAppSelector((store) => store);
+  const { adminCoupon } = useAppSelector((store) => store);
   const [snackbarOpen, setOpenSnackbar] = useState(false);
 
   const formik = useFormik<CouponFormValues>({

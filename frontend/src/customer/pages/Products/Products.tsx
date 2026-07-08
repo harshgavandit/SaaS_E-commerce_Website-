@@ -136,7 +136,7 @@ const Products = () => {
           <div className="flex justify-center pt-10">
             <Pagination
               page={page}
-              onChange={(e, value) => handlePageChange(value)}
+              onChange={(_e, value) => handlePageChange(value)}
               color="primary"
               count={products?.totalPages}
               shape="rounded"

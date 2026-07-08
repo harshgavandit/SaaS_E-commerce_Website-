@@ -1,6 +1,6 @@
 // UpdateDealForm.tsx
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -10,7 +10,7 @@ import {
    
     Typography,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../Redux Toolkit/Store";
+import { useAppDispatch } from "../../../Redux Toolkit/Store";
 import { fetchHomeCategories } from "../../../Redux Toolkit/Admin/AdminSlice";
 import { updateDeal } from "../../../Redux Toolkit/Admin/DealSlice";
 
@@ -32,7 +32,6 @@ const initialValues = {
 };
 
 const UpdateDealForm = ({ id }: { id: number }) => {
-    const { admin } = useAppSelector((store) => store);
     const dispatch = useAppDispatch();
     const formik = useFormik({
         initialValues,

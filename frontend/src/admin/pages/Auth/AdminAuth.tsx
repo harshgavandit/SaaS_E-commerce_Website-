@@ -1,4 +1,3 @@
-import React from 'react'
 import AdminLoginForm from './AdminLogin'
 
 const AdminAuth = () => {

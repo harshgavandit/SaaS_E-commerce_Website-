@@ -46,7 +46,7 @@ export const fetchOrderById = createAsyncThunk<
 >("orders/fetchOrderById", async ({ orderId, jwt }, { rejectWithValue }) => {
   try {
     const response = await api.get(`${API_URL}/${orderId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      headers: { Authorization: `Bearer ${jwt}` },
     });
     console.log("order fetched -", response.data);
     return response.data;

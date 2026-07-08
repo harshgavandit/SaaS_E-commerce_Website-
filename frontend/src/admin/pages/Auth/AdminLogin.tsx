@@ -1,5 +1,5 @@
-import { Alert, Button, CircularProgress, Snackbar, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Button, CircularProgress, TextField } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../../Redux Toolkit/Store';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,6 @@ const AdminLoginForm = () => {
 
     const navigate = useNavigate();
     const [otp, setOtp] = useState("");
-    const [isOtpSent, setIsOtpSent] = useState(false)
     const [timer, setTimer] = useState<number>(30); // Timer state
     const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
     const dispatch = useAppDispatch();
@@ -45,7 +44,6 @@ const AdminLoginForm = () => {
     };
 
     const handleSentOtp = () => {
-        setIsOtpSent(true);
         handleResendOTP();
     }
 

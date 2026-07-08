@@ -19,7 +19,7 @@ interface ProductCardProps {
   // images: string[];
   // categoryId: string | undefined;
   item: Product;
-  categoryId: string
+  categoryId?: string
 }
 const style = {
   position: "absolute",
@@ -32,6 +32,7 @@ const style = {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ item, categoryId }) => {
+  const productCategoryId = categoryId || item.category?.categoryId || "search";
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const { wishlist } = useAppSelector((store) => store);
@@ -39,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, categoryId }) => {
   const dispatch = useAppDispatch();
   const [showChatBot, setShowChatBot] = useState(false);
 
-  const handleAddWishlist = (event: MouseEvent) => {
+  const handleAddWishlist = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (item._id) dispatch(addProductToWishlist({ productId: item._id }));
   };
@@ -56,12 +57,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, categoryId }) => {
     return () => clearInterval(interval);
   }, [isHovered, item.images.length]);
 
-  const handleShowChatBot = (event: MouseEvent) => {
+  const handleShowChatBot = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setShowChatBot(true);
   };
-  const handleCloseChatBot = (e: MouseEvent) => {
-    e.stopPropagation();
+  const handleCloseChatBot = (event?: React.MouseEvent<HTMLElement>) => {
+    event?.stopPropagation();
     setShowChatBot(false);
   };
 
@@ -70,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, categoryId }) => {
       <div
         onClick={() =>
           navigate(
-            `/product-details/${categoryId}/${item.title}/${item._id}`
+            `/product-details/${productCategoryId}/${item.title}/${item._id}`
           )
         }
         className="group px-4 relative"
@@ -157,7 +158,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, categoryId }) => {
         <section className="absolute left-16 top-0">
           <Modal
             open={true}
-            onClose={handleCloseChatBot}
+            onClose={() => handleCloseChatBot()}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
