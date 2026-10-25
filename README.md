@@ -83,7 +83,13 @@ F:\Ecommerce_Website
 
 ## Environment Variables
 
-Create a `backend/.env` file with the required values:
+Copy the committed template, then fill in your own credentials in the ignored local file:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+On macOS/Linux, use `cp backend/.env.example backend/.env`. The template contains placeholders only:
 
 ```env
 PORT=8080
@@ -98,6 +104,12 @@ Notes:
 - The JWT helper reads `SECERET_KEY` from the environment.
 - The chatbot service reads `GEMINI_API_KEY`.
 - The frontend points to `http://localhost:8080` by default in `frontend/src/Config/Api.ts`.
+
+Keep the existing `SECERET_KEY` spelling when configuring the app. Use a long, randomly generated JWT signing secret and a MongoDB account scoped to this application. Do not commit real `.env` files or put server credentials in frontend environment variables.
+
+For a hosted backend, set `MONGO_URI`, `SECERET_KEY`, and `GEMINI_API_KEY` in the hosting provider's server-side environment settings before deploying; the host may supply `PORT`. A checkout no longer supplies backend credentials. Configure the frontend's API origin separately in `frontend/src/Config/Api.ts`; the linked demo needs its own host-side configuration.
+
+A previous revision tracked a backend environment file. Removing it from the current source does not revoke credentials or erase Git history. Replace any values that were exposed at their MongoDB/Google providers, and rotate the JWT signing secret; existing sessions will need to sign in again. Provider-side rotation has not been verified here.
 
 ## Install Dependencies
 

@@ -1,0 +1,5 @@
+# Keep local credentials out of every application folder.
+.env
+.env.*
+!.env.example
+node_modules/
