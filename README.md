@@ -96,18 +96,19 @@ PORT=8080
 MONGO_URI=your-mongodb-connection-string
 SECERET_KEY=your-jwt-secret
 GEMINI_API_KEY=your-gemini-api-key
+GEMINI_MODEL=gemini-3.8-flash
 ```
 
 Notes:
 
 - The backend reads `MONGO_URI` in `backend/src/config/db.js`.
 - The JWT helper reads `SECERET_KEY` from the environment.
-- The chatbot service reads `GEMINI_API_KEY`.
-- The frontend points to `http://localhost:8080` by default in `frontend/src/Config/Api.ts`.
+- The chatbot service reads `GEMINI_API_KEY` and optional `GEMINI_MODEL` (default `gemini-3.8-flash`). Replies have a 1,200-token output limit and a 30-second provider timeout.
+- The frontend uses `VITE_API_URL` when set. Local development defaults to `http://localhost:8080`; production defaults to the hosted API already declared in `frontend/src/Config/Api.ts`.
 
 Keep the existing `SECERET_KEY` spelling when configuring the app. Use a long, randomly generated JWT signing secret and a MongoDB account scoped to this application. Do not commit real `.env` files or put server credentials in frontend environment variables.
 
-For a hosted backend, set `MONGO_URI`, `SECERET_KEY`, and `GEMINI_API_KEY` in the hosting provider's server-side environment settings before deploying; the host may supply `PORT`. A checkout no longer supplies backend credentials. Configure the frontend's API origin separately in `frontend/src/Config/Api.ts`; the linked demo needs its own host-side configuration.
+For a hosted backend, set `MONGO_URI`, `SECERET_KEY`, and `GEMINI_API_KEY` in the hosting provider's server-side environment settings before deploying; the host may supply `PORT`. A checkout no longer supplies backend credentials. Set `VITE_API_URL` in the frontend host's build environment to use a different owned API deployment. The linked demo needs its own host-side configuration.
 
 A previous revision tracked a backend environment file. Removing it from the current source does not revoke credentials or erase Git history. Replace any values that were exposed at their MongoDB/Google providers, and rotate the JWT signing secret; existing sessions will need to sign in again. Provider-side rotation has not been verified here.
 

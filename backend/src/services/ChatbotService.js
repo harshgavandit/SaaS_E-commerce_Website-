@@ -1,39 +1,42 @@
 require("dotenv").config();
-const fs = require("fs");
 const ProductService = require("./ProductService");
 
+async function createGeminiClient() {
+  if (!process.env.GEMINI_API_KEY) throw new Error("The AI service is not configured.");
+  const { GoogleGenAI } = await import("@google/genai");
+  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { timeout: 30000 } });
+}
+
 class ChatboatService {
-  // The client gets the API key from the environment variable `GEMINI_API_KEY`.
+  constructor({ clientFactory = createGeminiClient, products = ProductService } = {}) {
+    this.clientFactory = clientFactory;
+    this.products = products;
+  }
 
   async chatService(contents) {
-    const { GoogleGenAI } = await import("@google/genai");
-
-    const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
-
+    const ai = await this.clientFactory();
+    const model = process.env.GEMINI_MODEL?.trim() || "gemini-3.8-flash";
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model,
       contents,
+      config: {
+        maxOutputTokens: 1200,
+        ...(/^gemini-3\./.test(model) ? { thinkingConfig: { thinkingLevel: "low" } } : {}),
+      },
     });
-    console.log(response.text);
-    return response.text;
+    const text = response.text?.trim();
+    if (!text) throw new Error("The AI service returned an empty answer.");
+    return text;
   }
 
   async askProductQuestion(productId, userQuestion) {
     try {
-      const product = await ProductService.findProductById(productId);
-
-      console.log("product ", product);
+      const product = await this.products.findProductById(productId);
       if (!product) {
         return "Sorry, the product you're asking about does not exist.";
       }
 
       const productDetails = JSON.stringify(product);
-
-      console.log("product ", productDetails);
-
-      const { GoogleGenAI } = await import("@google/genai");
-
-      const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
       const prompt = `
         You are an eCommerce assistant. 
@@ -54,19 +57,12 @@ class ChatboatService {
         },
       ];
 
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents,
-      });
-
-      const text = response.text;
-
-      return text;
+      return await this.chatService(contents);
     } catch (error) {
-      console.error("AI Error:", error);
-      throw Error(error);
+      throw error;
     }
   }
 }
 
 module.exports = new ChatboatService();
+module.exports.ChatboatService = ChatboatService;
